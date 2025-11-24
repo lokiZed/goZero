@@ -30,15 +30,15 @@ func genCustomized(table Table, withCache, postgreSql bool) (string, error) {
 	var count int
 	for _, field := range table.Fields {
 		camel := util.SafeString(field.Name.ToCamel())
-		if table.isIgnoreColumns(field.Name.Source()) {
-			continue
-		}
-
-		if field.Name.Source() == table.PrimaryKey.Name.Source() {
-			if table.PrimaryKey.AutoIncrement {
-				continue
-			}
-		}
+		//if table.isIgnoreColumns(field.Name.Source()) {
+		//	continue
+		//}
+		//
+		//if field.Name.Source() == table.PrimaryKey.Name.Source() {
+		//	if table.PrimaryKey.AutoIncrement {
+		//		continue
+		//	}
+		//}
 
 		count += 1
 		if postgreSql {
