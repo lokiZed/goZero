@@ -203,14 +203,14 @@ var commonMysqlDataTypeMapString = map[string]string{
 }
 
 // ConvertDataType converts mysql column type into golang type
-func ConvertDataType(dataBaseType int, isDefaultNull, unsigned, strict bool) (string, string, error) {
+func ConvertDataType(tableName, columnName string, dataBaseType int, isDefaultNull, unsigned, strict bool) (string, string, error) {
 	if env.UseExperimental() {
 		tp, ok := commonMysqlDataTypeMap[dataBaseType]
 		if !ok {
 			return "", "", fmt.Errorf("unsupported database type: %v", dataBaseType)
 		}
 
-		goType, thirdPkg, _, err := ConvertStringDataType(tp, isDefaultNull, unsigned, strict)
+		goType, thirdPkg, _, err := ConvertStringDataType(tableName, columnName, tp, isDefaultNull, unsigned, strict)
 		return goType, thirdPkg, err
 	}
 
@@ -224,10 +224,10 @@ func ConvertDataType(dataBaseType int, isDefaultNull, unsigned, strict bool) (st
 }
 
 // ConvertStringDataType converts mysql column type into golang type
-func ConvertStringDataType(dataBaseType string, isDefaultNull, unsigned, strict bool) (
+func ConvertStringDataType(tableName, columnName string, dataBaseType string, isDefaultNull, unsigned, strict bool) (
 	goType string, thirdPkg string, isPQArray bool, err error) {
 	if env.UseExperimental() {
-		customTp, thirdImport := convertDatatypeWithConfig(dataBaseType, isDefaultNull, unsigned)
+		customTp, thirdImport := convertDatatypeWithConfig(tableName, columnName, dataBaseType, isDefaultNull, unsigned)
 		if len(customTp) != 0 {
 			return customTp, thirdImport, false, nil
 		}
@@ -257,10 +257,20 @@ func ConvertStringDataType(dataBaseType string, isDefaultNull, unsigned, strict 
 	return mayConvertNullType(tp, isDefaultNull, unsigned, strict), "", false, nil
 }
 
-func convertDatatypeWithConfig(dataBaseType string, isDefaultNull, unsigned bool) (string, string) {
+func convertDatatypeWithConfig(tableName, columnName string, dataBaseType string, isDefaultNull, unsigned bool) (string, string) {
 	externalConfig, err := config.GetExternalConfig()
 	if err != nil {
 		return "", ""
+	}
+
+	// 定义了根据字段名替换的规则时 该规则优先级更高
+	tableOpt, ok := externalConfig.ColumnModel.ColumnsMap[strings.ToLower(tableName)]
+	if ok {
+		if columnOpt, ok2 := tableOpt[columnName]; ok2 {
+			if len(columnOpt.Type) != 0 {
+				return columnOpt.Type, columnOpt.Pkg
+			}
+		}
 	}
 
 	opt, ok := externalConfig.Model.TypesMap[strings.ToLower(dataBaseType)]

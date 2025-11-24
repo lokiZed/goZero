@@ -38,12 +38,20 @@ type (
 	External struct {
 		// Model is the configuration for the model code generation.
 		Model Model `yaml:"model,omitempty"`
+		// ColumnModel is the configuration for the model code generation by column.
+		ColumnModel ColumnModel `yaml:"columnModel,omitempty"`
 	}
 
 	// Model defines the configuration for the model code generation.
 	Model struct {
 		// TypesMap: custom Data Type Mapping Table.
 		TypesMap map[string]ModelTypeMapOption `yaml:"types_map,omitempty" `
+	}
+
+	// ColumnModel defines the configuration for the model code generation by column.
+	ColumnModel struct {
+		// ColumnsMap: custom Data Type Mapping Table By Column.
+		ColumnsMap map[string]map[string]ModelTypeMapOption `yaml:"columns_map,omitempty" `
 	}
 
 	// ModelTypeMapOption custom Type Options.

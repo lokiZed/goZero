@@ -8,27 +8,27 @@ import (
 )
 
 func TestConvertDataType(t *testing.T) {
-	v, _, err := ConvertDataType(parser.TinyInt, false, false, true)
+	v, _, err := ConvertDataType("test", "test", parser.TinyInt, false, false, true)
 	assert.Nil(t, err)
 	assert.Equal(t, "int64", v)
 
-	v, _, err = ConvertDataType(parser.TinyInt, false, true, true)
+	v, _, err = ConvertDataType("test", "test", parser.TinyInt, false, true, true)
 	assert.Nil(t, err)
 	assert.Equal(t, "uint64", v)
 
-	v, _, err = ConvertDataType(parser.TinyInt, true, false, true)
+	v, _, err = ConvertDataType("test", "test", parser.TinyInt, true, false, true)
 	assert.Nil(t, err)
 	assert.Equal(t, "sql.NullInt64", v)
 
-	v, _, err = ConvertDataType(parser.Timestamp, false, false, true)
+	v, _, err = ConvertDataType("test", "test", parser.Timestamp, false, false, true)
 	assert.Nil(t, err)
 	assert.Equal(t, "time.Time", v)
 
-	v, _, err = ConvertDataType(parser.Timestamp, true, false, true)
+	v, _, err = ConvertDataType("test", "test", parser.Timestamp, true, false, true)
 	assert.Nil(t, err)
 	assert.Equal(t, "sql.NullTime", v)
 
-	v, _, err = ConvertDataType(parser.Decimal, false, false, true)
+	v, _, err = ConvertDataType("test", "test", parser.Decimal, false, false, true)
 	assert.Nil(t, err)
 	assert.Equal(t, "float64", v)
 }
@@ -98,7 +98,7 @@ func TestConvertStringDataType(t *testing.T) {
 		},
 	}
 	for _, data := range testData {
-		tp, thirdPkg, isPQArray, err := ConvertStringDataType(data.input.dataType, data.input.isDefaultNull, data.input.unsigned, data.input.strict)
+		tp, thirdPkg, isPQArray, err := ConvertStringDataType("test", "test", data.input.dataType, data.input.isDefaultNull, data.input.unsigned, data.input.strict)
 		assert.NoError(t, err)
 		assert.Equal(t, data.want, result{
 			goType:    tp,
