@@ -25,7 +25,7 @@ func genFields(table Table, fields []*parser.Field) (string, error) {
 }
 
 func genField(table Table, field *parser.Field) (string, error) {
-	tag, err := genTag(table, field.NameOriginal)
+	tag, err := genTag(table, field)
 	if err != nil {
 		return "", err
 	}

@@ -1,14 +1,15 @@
 package gen
 
 import (
+	"github.com/zeromicro/go-zero/tools/goctl/model/sql/parser"
 	"github.com/zeromicro/go-zero/tools/goctl/model/sql/template"
 	"github.com/zeromicro/go-zero/tools/goctl/util"
 	"github.com/zeromicro/go-zero/tools/goctl/util/pathx"
 )
 
-func genTag(table Table, in string) (string, error) {
-	if in == "" {
-		return in, nil
+func genTag(table Table, field *parser.Field) (string, error) {
+	if field.NameOriginal == "" {
+		return field.NameOriginal, nil
 	}
 
 	text, err := pathx.LoadTemplate(category, tagTemplateFile, template.Tag)
@@ -17,7 +18,7 @@ func genTag(table Table, in string) (string, error) {
 	}
 
 	output, err := util.With("tag").Parse(text).Execute(map[string]any{
-		"field": in,
+		"field": field,
 		"data":  table,
 	})
 	if err != nil {
