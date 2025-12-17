@@ -18,7 +18,13 @@ func genImports(table Table, withCache, timeImport bool) (string, error) {
 				continue
 			}
 			m[c.ThirdPkg] = struct{}{}
-			thirdImports = append(thirdImports, fmt.Sprintf("%q", c.ThirdPkg))
+			pkgInfoList := strings.Split(c.ThirdPkg, " ")
+			thirdPkg := fmt.Sprintf(`%q`, c.ThirdPkg)
+			if len(pkgInfoList) == 2 {
+				// 有别名 且格式正确
+				thirdPkg = fmt.Sprintf(`%s %q`, pkgInfoList[0], pkgInfoList[1])
+			}
+			thirdImports = append(thirdImports, thirdPkg)
 		}
 	}
 
