@@ -21,6 +21,7 @@ type Field struct {
 	Comment         string
 	SeqInIndex      int
 	OrdinalPosition int
+	IsMask          bool // 是否为掩码
 }
 
 func genCustomized(table Table, withCache, postgreSql bool) (string, error) {
@@ -56,6 +57,7 @@ func genCustomized(table Table, withCache, postgreSql bool) (string, error) {
 			Comment:         field.Comment,
 			SeqInIndex:      field.SeqInIndex,
 			OrdinalPosition: field.OrdinalPosition,
+			IsMask:          strings.HasSuffix(field.NameOriginal, "_mask"),
 		}
 		fields = append(fields, f)
 	}
